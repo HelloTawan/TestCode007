@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Analysis - {{ symbol }}</title>
+</head>
+<body>
+    <h1>Stock Analysis: {{ symbol }}</h1>
+    <form method="get">
+        <label for="symbol">Symbol:</label>
+        <input type="text" id="symbol" name="symbol" value="{{ symbol }}">
+        <button type="submit">Search</button>
+    </form>
+    <h2>Company Info</h2>
+    <ul>
+        <li>Name: {{ info['shortName'] }}</li>
+        <li>Sector: {{ info['sector'] }}</li>
+        <li>Market Cap: {{ info['marketCap'] }}</li>
+    </ul>
+    <h2>Last 5 Days</h2>
+    <table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Open</th>
+            <th>Close</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Volume</th>
+        </tr>
+        {% for row in history %}
+        <tr>
+            <td>{{ row['Date'] }}</td>
+            <td>{{ row['Open'] }}</td>
+            <td>{{ row['Close'] }}</td>
+            <td>{{ row['High'] }}</td>
+            <td>{{ row['Low'] }}</td>
+            <td>{{ row['Volume'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
