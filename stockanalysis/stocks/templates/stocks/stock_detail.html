@@ -1,0 +1,121 @@
+{% extends 'stocks/base.html' %}
+
+{% block title %}Stock Analysis - {{ stock_data.symbol|default:"Error" }}{% endblock %}
+
+{% block content %}
+<div class="search-form">
+    <form method="get" action="">
+        <input type="text" name="symbol" placeholder="Enter another stock symbol" value="{{ stock_data.symbol|default:'' }}">
+        <button type="submit">Search Stock</button>
+    </form>
+</div>
+
+{% if error %}
+<div class="error">
+    {{ error }}
+    <br><br>
+    <a href="{% url 'stocks:home' %}">← Back to Home</a>
+</div>
+{% else %}
+{% if data_source == 'mock' %}
+<div style="background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+    <strong>📋 Demo Mode:</strong> Showing sample data because live API is not available in this environment. 
+    In a production environment, this would fetch real-time data from Yahoo Finance.
+</div>
+{% elif data_source == 'real' %}
+<div style="background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+    <strong>📊 Live Data:</strong> Showing real-time data from Yahoo Finance API.
+</div>
+{% endif %}
+
+<div class="stock-info">
+    <div class="stock-header">
+        <h2>{{ stock_data.name }} ({{ stock_data.symbol }})</h2>
+    </div>
+    
+    <div class="info-grid">
+        <div class="info-item">
+            <div class="info-label">Current Price</div>
+            <div class="info-value">${{ stock_data.current_price|default:"N/A" }}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Market Cap</div>
+            <div class="info-value">
+                {% if stock_data.market_cap != "N/A" %}
+                    ${{ stock_data.market_cap|floatformat:0 }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Sector</div>
+            <div class="info-value">{{ stock_data.sector|default:"N/A" }}</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">Industry</div>
+            <div class="info-value">{{ stock_data.industry|default:"N/A" }}</div>
+        </div>
+        {% if stock_data.website != "N/A" %}
+        <div class="info-item">
+            <div class="info-label">Website</div>
+            <div class="info-value">
+                <a href="{{ stock_data.website }}" target="_blank" style="color: #007bff;">{{ stock_data.website }}</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if stock_data.description != "N/A" %}
+    <div class="description">
+        <h4>Company Description:</h4>
+        <p>{{ stock_data.description|truncatewords:50 }}</p>
+    </div>
+    {% endif %}
+</div>
+
+{% if historical_data %}
+<div class="historical-data">
+    <h3>📊 Price History (Last 5 Days)</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Open</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Close</th>
+                <th>Volume</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for day in historical_data %}
+            <tr>
+                <td>{{ day.date }}</td>
+                <td>${{ day.open }}</td>
+                <td>${{ day.high }}</td>
+                <td>${{ day.low }}</td>
+                <td>${{ day.close }}</td>
+                <td>{{ day.volume|floatformat:0 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endif %}
+
+<div style="text-align: center; margin-top: 30px;">
+    <a href="{% url 'stocks:home' %}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;">← Back to Home</a>
+</div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const symbol = document.querySelector('input[name="symbol"]').value.trim().toUpperCase();
+    if (symbol) {
+        window.location.href = '{% url "stocks:stock_detail" "PLACEHOLDER" %}'.replace('PLACEHOLDER', symbol);
+    }
+});
+</script>
+{% endblock %}

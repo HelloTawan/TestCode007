@@ -1,0 +1,43 @@
+{% extends 'stocks/base.html' %}
+
+{% block title %}Stock Analysis - Home{% endblock %}
+
+{% block content %}
+<div class="search-form">
+    <form method="get" action="">
+        <input type="text" name="symbol" placeholder="Enter stock symbol (e.g., AAPL)" required>
+        <button type="submit">Search Stock</button>
+    </form>
+</div>
+
+<div style="text-align: center; margin-top: 40px;">
+    <h3>Popular US Stocks to Try:</h3>
+    <div style="margin: 20px 0;">
+        <a href="{% url 'stocks:stock_detail' 'AAPL' %}" style="margin: 0 10px; padding: 8px 16px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">AAPL</a>
+        <a href="{% url 'stocks:stock_detail' 'GOOGL' %}" style="margin: 0 10px; padding: 8px 16px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">GOOGL</a>
+        <a href="{% url 'stocks:stock_detail' 'MSFT' %}" style="margin: 0 10px; padding: 8px 16px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">MSFT</a>
+        <a href="{% url 'stocks:stock_detail' 'TSLA' %}" style="margin: 0 10px; padding: 8px 16px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">TSLA</a>
+        <a href="{% url 'stocks:stock_detail' 'AMZN' %}" style="margin: 0 10px; padding: 8px 16px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px;">AMZN</a>
+    </div>
+</div>
+
+<div style="margin-top: 40px; padding: 20px; background-color: #e9ecef; border-radius: 4px;">
+    <h4>How to use:</h4>
+    <ul>
+        <li>Enter a US stock symbol (ticker) in the search box above</li>
+        <li>Examples: AAPL (Apple), GOOGL (Google), MSFT (Microsoft), TSLA (Tesla)</li>
+        <li>Click "Search Stock" to view detailed information and price history</li>
+        <li>The tool will show company details and stock prices for the last 5 days</li>
+    </ul>
+</div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const symbol = document.querySelector('input[name="symbol"]').value.trim().toUpperCase();
+    if (symbol) {
+        window.location.href = '{% url "stocks:stock_detail" "PLACEHOLDER" %}'.replace('PLACEHOLDER', symbol);
+    }
+});
+</script>
+{% endblock %}
